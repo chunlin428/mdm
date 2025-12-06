@@ -1,0 +1,107 @@
+# Notices for Eclipse MDM|BL
+
+This content is produced and maintained by the Eclipse MDM|BL project,
+it is a project of the openMDM(R) Eclipse Working Group.
+
+* Project home: https://projects.eclipse.org/projects/automotive.mdmbl/
+
+## Trademarks
+
+Eclipse MDM|BL, MDM|BL and Eclipse openMDM(R) logo are registered trademarks
+of the Eclipse Foundation.
+
+## Copyright
+
+All content is the property of the following respective authors or their employers.
+For more information regarding authorship of content, please consult the listed
+source code repository logs.
+
+Copyright (c) 2016-2019 Gigatronik Ingolstadt GmbH
+Copyright (c) 2016-2025 Peak Solution GmbH
+Copyright (c) 2017-2020 science + computing AG Tuebingen (ATOS SE)
+Copyright (c) 2017-2018 Canoo Engineering AG
+Copyright (c) 2017-2025 Angelika Wittek
+Copyright (c) 2018-2019 Elektronische Fahrwerksysteme GMBH
+Copyright (c) 2018-2025 Karakun AG
+Copyright (c) 2018-2019 Alexander Nehmer
+Copyright (c) 2022-2025 MTU Aero Engines AG
+
+## Declared Project Licenses
+
+This program and the accompanying materials are made available under the
+terms of the Eclipse Public License v. 2.0 which is available at
+http://www.eclipse.org/legal/epl-2.0.
+
+SPDX-License-Identifier: EPL-2.0
+
+## Source Code
+
+The project maintains the following source code repository:
+
+* https://gitlab.eclipse.org/eclipse/mdmbl
+	with the following submodules:
+	* org.eclipse.mdm.api.base.git	        - The openMDM(R) API.
+	* org.eclipse.mdm.api.odsadapter.git	- ODS implementation of persistence adapter.
+	* org.eclipse.mdm.nucleus.git	        - Core building blocks for the openMDM Business Logic and Web Frontend.
+
+
+## Third-party Content
+
+This project leverages the following third party content.
+
+See DEPENDENCIES_* files.
+
+
+FFAMFAMFAM Silk Icon, Version 1.3
+    * License: Creative Commons Attribution 3.0 License
+    * Licence Path: https://creativecommons.org/licenses/by/3.0/
+    * Project: http://www.famfamfam.com/lab/icons/silk/
+    * Source:  http://www.famfamfam.com/lab/icons/silk/
+
+font-awesome@4.7.0
+    * License: MIT
+    * Licence Path: https://github.com/FortAwesome/Font-Awesome/blob/master/LICENSE.txt
+    * Project: https://fontawesome.com/
+    * Source:  https://github.com/FortAwesome/Font-Awesome
+
+OMG Event Service Specification (1.2)
+
+* License: LicenseRef - Object-Management-Group-License
+* Project: https://www.omg.org/spec/EVNT/1.2/
+* Source: https://www.omg.org/spec/EVNT/1.2/pdf
+
+OMG Notification Service Specification (1.1)
+
+* License: LicenseRef - Object-Management-Group-License
+* Project: https://www.omg.org/spec/NOT/
+* Source: https://www.omg.org/spec/NOT/1.1/PDF
+
+ods530.idl
+Date: Hoehenkirchen, 20/07/2020
+"The ASAM Board of Directors releases the IDL files for use under the EPL to the Eclipse Foundation.
+This is valid for all versions of ASAM ODS 5.3.x.
+This permission is valid under the conditions of Eclipse will not modify the file."
+
+AvalonEvent.idl, CorbaFileServer.idl
+Date: 08/15/2016
+"Herewith, we release the generated Client-Source-Code generated from our CORBA IDLs, namely
+* CORBANotification Service (generated from „AvalonEvent.idl”)
+* CORBAFileServer (generated from „CorbaFileServer.idl“),
+Under the Eclipse Public License (EPL). This agreement does not include the „AvalonEvent.idl“ and
+„CorbaFileServer.idl“ itself, which remain protected property of HighQSoft. "
+
+ods.proto, ods_security.proto, ods_notification.proto
+Date: 07/18/2023
+"To Whom It May Concern,
+The ASAM Board of Directors releases the IDL file and the protobuf files for use under the EPL
+to the Eclipse IWG openMDM. This is valid for all versions of ASAM ODS 6.2.x.
+This permission is valid under the condition that Eclipse will not modify the file."
+
+## Cryptography
+
+Content may contain encryption software. The country in which you are currently
+may have restrictions on the import, possession, and use, and/or re-export to
+another country, of encryption software. BEFORE using any encryption software,
+please check the country's laws, regulations and policies concerning the import,
+possession, or use, and re-export of encryption software, to see if this is
+permitted.

@@ -1,0 +1,149 @@
+/********************************************************************************
+ * Copyright (c) 2015 Contributors to the Eclipse Foundation
+ *
+ * See the NOTICE file(s) distributed with this work for additional
+ * information regarding copyright ownership.
+ *
+ * This program and the accompanying materials are made available under the
+ * terms of the Eclipse Public License v. 2.0 which is available at
+ * http://www.eclipse.org/legal/epl-2.0.
+ *
+ * SPDX-License-Identifier: EPL-2.0
+ *
+ ********************************************************************************/
+
+plugins {
+	id "net.nemerosa.versioning" version "3.1.0"
+	id "com.bmuschko.docker-remote-api" version "9.4.0"
+	id "org.openrewrite.rewrite" version "7.6.2"
+	id "org.owasp.dependencycheck" version "12.1.1"
+	id 'com.github.ben-manes.versions' version '0.52.0'
+}
+
+description = 'MDM Root'
+group = 'org.eclipse.mdm'
+version = '5.4.0M1-SNAPSHOT'
+
+rewrite {
+	activeRecipe("org.openrewrite.java.migrate.jakarta.JavaxMigrationToJakarta")
+	activeRecipe("org.openrewrite.java.migrate.jakarta.JakartaEE10")
+	exportDatatables = true
+}
+
+repositories {
+	mavenCentral()
+}
+
+dependencies {
+	rewrite("org.openrewrite.recipe:rewrite-migrate-java:3.9.0")
+}
+
+import com.bmuschko.gradle.docker.tasks.image.*
+
+task prepareDockerBuild(type: Copy) {
+	from('docker') {
+		include 'Dockerfile'
+		include 'src/**'
+	}
+	from tasks.getByPath(':nucleus:war')
+
+	from("nucleus/build") {
+		include 'resources/main/logback.xml'
+	}
+	
+	eachFile {
+		path = name
+	}
+	includeEmptyDirs = false
+
+	into("$buildDir/docker")
+}
+
+task prepareDockerConf(type: Copy, dependsOn:':nucleus:collectConfiguration') {
+	from tasks.getByPath(':nucleus:collectConfiguration')
+	into("$buildDir/docker")
+}
+
+task buildOpenmdmImage(type: DockerBuildImage) {
+	dependsOn('prepareDockerBuild', 'prepareDockerConf', ':nucleus:assemble')
+	inputs.dir(fileTree("$buildDir/docker"))
+	
+	images.add("openmdm-gf7:${version}")
+	buildArgs = [OPENMDM_VERSION: "${version}"]
+	labels = [
+		'org.opencontainers.image.version': "${version}", 
+		'org.opencontainers.image.revision': versioning.info.commit,
+		'org.opencontainers.image.created': new java.text.SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ssZ").format(new Date())
+	]
+}
+
+dependencyCheck {
+	failBuildOnCVSS = 11.0 // never fail build until issues are resolved
+	formats = ['HTML', 'GITLAB', 'JSON']
+	analyzers {
+		nodeAudit {
+			yarnEnabled = false
+		}
+	}
+}
+
+allprojects {
+	repositories {
+		mavenLocal()
+		mavenCentral()
+	}
+}
+
+
+subprojects {
+	apply plugin: 'java-library'
+	apply plugin: 'maven-publish'
+
+	group = rootProject.group
+	version = rootProject.version
+
+	java {
+		toolchain {
+			languageVersion = JavaLanguageVersion.of(17)
+		}
+	}
+	jar {
+			manifest {
+				attributes(
+					'Build-Timestamp': new java.text.SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ssZ").format(new Date()),
+					'Build-Revision' : versioning.info.commit,
+					'Created-By'     : "Gradle ${gradle.gradleVersion}",
+		            'Build-Jdk'      : "${System.properties['java.version']} (${System.properties['java.vendor']} ${System.properties['java.vm.version']})",
+		            'Build-OS'       : "${System.properties['os.name']} ${System.properties['os.arch']} ${System.properties['os.version']}"
+				)
+		}
+	}
+	test {
+		useJUnitPlatform() {
+			excludeTags 'integration'
+		}
+		jvmArgs = ['-Xmx2048m', '--add-opens=java.base/java.lang=ALL-UNNAMED', '--add-opens=java.naming/javax.naming.spi=ALL-UNNAMED'] // for embedded glassfish
+	}
+	
+	// execute integration tests after docker image was built
+	tasks.register('integrationTest', Test) {
+		description = 'Runs integration tests.'
+		group = 'verification'
+		
+		// to avoid deprecation warning: Relying on conventions for custom Test tasks
+		testClassesDirs = testing.suites.test.sources.output.classesDirs
+		classpath = testing.suites.test.sources.runtimeClasspath
+		shouldRunAfter test
+		
+		useJUnitPlatform() {
+			includeTags 'integration'
+		}
+		jvmArgs = ['-Xmx2048m', '--add-opens=java.base/java.lang=ALL-UNNAMED', '--add-opens=java.naming/javax.naming.spi=ALL-UNNAMED'] // for embedded glassfish
+		testLogging {
+			events "passed"
+		}
+	}
+
+	integrationTest.dependsOn buildOpenmdmImage
+	check.dependsOn integrationTest
+}
