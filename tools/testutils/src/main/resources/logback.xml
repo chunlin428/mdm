@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration debug="true" scan="true">
+
+    <appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
+        <layout class="ch.qos.logback.classic.PatternLayout">
+            <Pattern>
+                %d{HH:mm:ss.SSS} [%t] %-5level %logger{36} - %msg%n
+            </Pattern>
+        </layout>
+    </appender>
+
+	<logger level="INFO" name="org.eclipse.mdm.api.odsadapter.utils.OdsHttpRequests" additivity="false">
+		<appender-ref ref="STDOUT"/>
+	</logger>
+	
+    <logger name="org.eclipse.mdm" level="debug" additivity="false">
+        <appender-ref ref="STDOUT"/>
+    </logger>
+
+    <root level="error">
+        <appender-ref ref="STDOUT"/>
+    </root>
+
+</configuration>
